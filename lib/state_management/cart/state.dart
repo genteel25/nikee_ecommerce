@@ -65,16 +65,18 @@ class CartNotifier {
   List<CartData> cart = [];
   static final CartNotifier instance =
       CartNotifier._internal(); // Private constructor
+
   factory CartNotifier() =>
       instance; // Factory constructor to return the instance
-
   CartNotifier._internal(); // Private
+
   int _totalCartAmount = 0;
   int get totalCartAmount => _totalCartAmount;
   int _shippingFeeAmount = 0;
   int get shippingFeeAmount => _shippingFeeAmount;
   int _mainCartAmount = 0;
   int get mainCartAmount => _mainCartAmount;
+
   void addToCart(ProductData data) {
     List<CartData> checkCart =
         cart.where((element) => element.product == data).toList();
@@ -138,5 +140,14 @@ class CartNotifier {
       state.value = CartSuccessfulState(cart, totalCartAmount.toString(),
           shippingFeeAmount.toString(), mainCartAmount.toString());
     }
+  }
+
+  checkoutCart() {
+    cart.clear();
+    _totalCartAmount = 0;
+    _shippingFeeAmount = 0;
+    _mainCartAmount = 0;
+    state.value = CartSuccessfulState(cart, totalCartAmount.toString(),
+        shippingFeeAmount.toString(), mainCartAmount.toString());
   }
 }

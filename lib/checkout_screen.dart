@@ -1,3 +1,5 @@
+import 'package:ecommerce/model/products.dart';
+import 'package:ecommerce/order_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'state_management/cart/state.dart';
@@ -348,20 +350,52 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                      ),
-                      child: Text(
-                        "Payment",
-                        style: Styles.x28dp700w().copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.lightBgColor,
-                        ),
-                      ),
-                    ),
+                    child: ValueListenableBuilder(
+                        valueListenable: CartNotifier.instance.state,
+                        builder: (context, state, _) {
+                          return switch (state) {
+                            CartSuccessfulState(:List<CartData> cartData) =>
+                              ElevatedButton(
+                                onPressed: cartData.isEmpty
+                                    ? null
+                                    : () {
+                                        CartNotifier.instance.checkoutCart();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const OrderScreen(),
+                                          ),
+                                        );
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primaryColor,
+                                ),
+                                child: Text(
+                                  "Payment",
+                                  style: Styles.x28dp700w().copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.lightBgColor,
+                                  ),
+                                ),
+                              ),
+                            _ => ElevatedButton(
+                                onPressed: null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primaryColor,
+                                ),
+                                child: Text(
+                                  "Payment",
+                                  style: Styles.x28dp700w().copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.lightBgColor,
+                                  ),
+                                ),
+                              )
+                          };
+                        }),
                   )
                 ],
               ),

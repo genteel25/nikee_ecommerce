@@ -349,23 +349,49 @@ class _CartScreenState extends State<CartScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CheckoutScreen(),
-                          )),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor),
-                      child: Text(
-                        "Checkout",
-                        style: Styles.x28dp700w().copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.lightBgColor,
-                        ),
-                      ),
-                    ),
+                    child: ValueListenableBuilder(
+                        valueListenable: CartNotifier.instance.state,
+                        builder: (context, state, child) {
+                          return switch (state) {
+                            CartSuccessfulState(:List<CartData> cartData) =>
+                              ElevatedButton(
+                                onPressed: cartData.isEmpty
+                                    ? null
+                                    : () {
+                                        // CartNotifier.instance.checkoutCart();
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const CheckoutScreen(),
+                                            ));
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primaryColor),
+                                child: Text(
+                                  "Checkout",
+                                  style: Styles.x28dp700w().copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.lightBgColor,
+                                  ),
+                                ),
+                              ),
+                            _ => ElevatedButton(
+                                onPressed: null,
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primaryColor),
+                                child: Text(
+                                  "Checkout",
+                                  style: Styles.x28dp700w().copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.lightBgColor,
+                                  ),
+                                ),
+                              )
+                          };
+                        }),
                   )
                 ],
               ),
